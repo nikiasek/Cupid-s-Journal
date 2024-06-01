@@ -4,35 +4,59 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/cupids_journal_db';
 const mongoose = require('mongoose');
-
-if (mongoose.connection.readyState === 0) {
-    mongoose.connect(mongoURI)
-      .then(() => console.log('MongoDB connected'))
-      .catch(err => console.log(err));
-  }
-  
-
-require('dotenv').config();
+const db = require("./models/user")
+const cors = require("cors")
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
+app.use(cors())
 
 
-app.use(express.json());
+app.get("/login", cors(), (req, res) => {
 
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/protected', require('./routes/protected'));
+})
+
+app.post("/login", async(req, res) => {
+    const{email, password}=req.body
+    try {
+        const check= await db.findOne({email:email})
+
+        if(check) {
+            res.json("exist")
+        }
+
+        else {
+            res.json("notExist")
+        }
+    }
+    catch (e){
+        res.json("not exist")
+    }
+})
+
+app.post("/signup", async(req, res) => {
+    const{email, password}=req.body
+    const data={
+        email:email,
+        password:password
+    }
+
+    try {
+        const check= await db.findOne({email:email})
+
+        if(check) {
+            res.json("exist")
+        }
+
+        else {
+            res.json("notExist")
+            await db.insertMany([data])
+        }
+    }
+    catch (e){
+        res.json("not exist")
+    }
+})
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
-
-app.get('/api/documents', (req, res) => {
-    // Logic to fetch documents from the database
-    res.json({ documents: [] });
-});
-
-app.post('/api/documents', (req, res) => {
-    // Logic to create a new document
-    res.json({ success: true });
-});
-
-
-
+    console.log("port connected ", {PORT})
+})

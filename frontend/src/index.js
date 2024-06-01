@@ -5,7 +5,8 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import Layout from './pages/Layout';
 import Home from "./pages/Home";
-import NoPage from "./pages/NoPage"
+import NoPage from "./pages/NoPage";
+import Login from "./pages/Login";
 
 
 export default function App() {
@@ -15,6 +16,7 @@ export default function App() {
           <Route path="/" element={<Layout />}>
           <Route path="/Home" element={<Home />} />
           <Route path="*" element={<NoPage />} />
+          <Route path="/Login" element={<Login />} />
         </Route>
       </Routes>
     </BrowserRouter>
