@@ -1,11 +1,8 @@
-const express = require('express');
-const connectDB = require('./config/db');
-const app = express();
 const PORT = process.env.PORT || 5000;
-const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/cupids_journal_db';
-const mongoose = require('mongoose');
+const express = require('express');
 const db = require("./models/user")
 const cors = require("cors")
+const app = express();
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(cors())
@@ -29,7 +26,7 @@ app.post("/login", async(req, res) => {
         }
     }
     catch (e){
-        res.json("not exist")
+        res.json("fail")
     }
 })
 
@@ -53,10 +50,10 @@ app.post("/signup", async(req, res) => {
         }
     }
     catch (e){
-        res.json("not exist")
+        res.json("fail")
     }
 })
 
 app.listen(PORT, () => {
-    console.log("port connected ", {PORT})
+    console.log("port connected ", PORT)
 })

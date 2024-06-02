@@ -19,7 +19,7 @@ function Login () {
                     history("/Home", {state:{id:email}})
                 }
                 else if(res.data === "notExist") {
-                    alert("user is not logged in  ")
+                    alert("Wrong credentials")
                 }
             })
             .catch(e=>{

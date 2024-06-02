@@ -18,7 +18,7 @@ function Signup () {
                 if(res.data === "exist") {
                     alert("User alreadyd exists")
                 }
-                else if(res.data === "not exist") {
+                else if(res.data === "notExist") {
                     history("/Home", {state:{id:email}})
                 }
             })

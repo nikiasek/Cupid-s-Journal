@@ -7,6 +7,10 @@ import Layout from './pages/Layout';
 import Home from "./pages/Home";
 import NoPage from "./pages/NoPage";
 import Login from "./pages/Login";
+import Signup from "./pages/Signin";
+import Account from "./pages/Account";
+import Inspiration from "./pages/Inspiration";
+import Editor from "./pages/Editor"
 
 
 export default function App() {
@@ -17,6 +21,10 @@ export default function App() {
           <Route path="/Home" element={<Home />} />
           <Route path="*" element={<NoPage />} />
           <Route path="/Login" element={<Login />} />
+          <Route path="/Signup" element={<Signup />} />
+          <Route path="/Account" element={<Account />} />
+          <Route path="/Home/Inspiration" element={<Inspiration />} />
+          <Route path="/Editor" element={<Editor />} />
         </Route>
       </Routes>
     </BrowserRouter>
