@@ -1,13 +1,13 @@
-import {useLocation} from "react-router-dom";
+import React from "react"
 
 
 const Home = () => {
-    const location=useLocation()
+
 
 
     return (
         <div className="homeClass">
-            <h1>Hello {location.state.id} and thank you </h1>
+            <h1>Hello {localStorage.getItem("email")} and thank you </h1>
         </div>
     )
   };

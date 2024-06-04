@@ -5,6 +5,7 @@ import {useNavigate} from "react-router-dom";
 function Signup () {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [user, setUser] = useState("")
     const history=useNavigate();
 
     async function submit (e) {
@@ -20,6 +21,8 @@ function Signup () {
                 }
                 else if(res.data === "notExist") {
                     history("/Home", {state:{id:email}})
+                    localStorage.setItem("email", setEmail(email))
+                    localStorage.setItem("loggedIn", true)                   
                 }
             })
             .catch(e=>{

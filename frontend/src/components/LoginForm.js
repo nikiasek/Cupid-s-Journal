@@ -17,6 +17,8 @@ function Login () {
             .then(res => {
                 if(res.data === "exist") {
                     history("/Home", {state:{id:email}})
+                    localStorage.setItem("email", email)
+                    localStorage.setItem("loggedIn", true)           
                 }
                 else if(res.data === "notExist") {
                     alert("Wrong credentials")
