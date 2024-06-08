@@ -1,12 +1,11 @@
-import Outlet from "../components/Outlet"
 import Header from "../components/Header"
+import Home from "../pages/Home"
 
 const Layout = () => {
   return (
     <>
       <Header />
-      <h1>Do you have an account?</h1>
-      <Outlet />
+      <Home />
     </>
   )
 };

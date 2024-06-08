@@ -1,13 +1,27 @@
 import React from "react"
+import "../css/home.css"
 
 
 const Home = () => {
-
+    const isLoggedIn = localStorage.getItem("loggedIn")
+    var message = ""
+    var buttonMessage = ""
+    if(isLoggedIn == "true") {
+        message = "Start creating your own letters"
+        buttonMessage = "Editor"
+    }
+    else {
+        message = "Do you have an account?"
+        buttonMessage = "Sign in"
+    }
 
 
     return (
         <div className="homeClass">
-            <h1>Hello {localStorage.getItem("email")} and thank you </h1>
+            <h1 className="roboto-bold">Messages for your loved ones</h1>
+
+            <p className="roboto-light">{message}</p>
+            <button> {buttonMessage}</button>
         </div>
     )
   };
