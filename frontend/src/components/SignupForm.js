@@ -5,7 +5,7 @@ import {useNavigate} from "react-router-dom";
 function Signup () {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const [user, setUser] = useState("")
+    const [username, setUsername] = useState("")
     const history=useNavigate();
 
     async function submit (e) {
@@ -13,11 +13,11 @@ function Signup () {
 
         try {
             await axios.post("http://localhost:5000/signup", {
-                email, password
+                email, password, username
             })
             .then(res => {
                 if(res.data === "exist") {
-                    alert("User alreadyd exists")
+                    alert("User already exists")
                 }
                 else if(res.data === "notExist") {
                     history("/Home", {state:{id:email}})
@@ -41,6 +41,7 @@ function Signup () {
             <form action="POST">
                 <input type="email" onChange={(e) =>{setEmail(e.target.value)}} placeholder="email" name="" id="" />
                 <input type="password" onChange={(e) =>{setPassword(e.target.value)}} name="password" id="" />
+                <input type="text" onChange={(e) =>{setUsername(e.target.value)}} name="username" id="" />
 
                 <input type="submit" onClick={submit} value="" />
             </form>

@@ -17,7 +17,7 @@ const Header = () => {
                         <Link to="/Home/Inspiration" ><FaMessage /></Link>
                     </div>
                     <div className="logo">
-                        <Link to="/" ><div id="heart"></div></Link>
+                        <Link to="/Home" ><div id="heart"></div></Link>
                     </div>
                     <div className="account">
                         <Link to="/account"><MdAccountCircle />  </Link>

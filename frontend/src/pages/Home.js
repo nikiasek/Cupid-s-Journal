@@ -1,5 +1,6 @@
 import React from "react"
 import "../css/home.css"
+import Header from "../components/Header"
 
 
 const Home = () => {
@@ -17,12 +18,15 @@ const Home = () => {
 
 
     return (
-        <div className="homeClass">
-            <h1 className="roboto-bold">Messages for your loved ones</h1>
+        <>
+            <Header />
+            <div className="homeClass">
 
-            <p className="roboto-light">{message}</p>
-            <button> {buttonMessage}</button>
-        </div>
+                <h1 className="roboto-bold">Messages for your loved ones</h1>
+                <p className="roboto-light">{message}</p>
+                <button> {buttonMessage}</button>
+            </div>
+        </>
     )
   };
   
