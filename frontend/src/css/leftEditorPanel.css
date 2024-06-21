@@ -1,0 +1,11 @@
+.leftPanel {
+    margin-right: 5vw;
+    margin-left: 20px;
+    width: 15vw;
+    height: 95vh;
+    background-color: red;
+    border-radius: 50px;
+    margin-top: 20px;
+    position: fixed;
+    top: 0;
+}

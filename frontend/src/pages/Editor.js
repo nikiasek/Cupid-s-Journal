@@ -1,45 +1,37 @@
-import axios from 'axios'
 import React, { useState } from 'react'
+import LeftEditorPanel from '../components/leftEditorPanel'
+import View from "../components/viewPanel"
+import RightEditorPanel from '../components/rightEditorPanel'
+import "../css/editor.css"
 
 const Editor = () => {
-  const [message, setMessage] = useState("")
-  const [style, setStyle] = useState("")
- 
-  async function submit (e) {
-    e.preventDefault()
+  const [htmlContent, setHtmlContent] = useState("");
+  const [selectedElement, setSelectedElement] = useState(null)
 
-    try {
-      await axios.post("http://localhost:5000/editor", {
-        message, style
-      })
-        .then(res =>{
-          if(res.data == "success") {
-            alert("done")
-          }
-          else {
-            alert("try again")
-            console.log(e)
-          }
-      })
-      .catch(e=>{
-        alert("something wrongg")
-        console.log(e)
-      })
-    }
-    catch(e) {
-      alert("something reallyy wrongg")
-      console.log(e)
+  const addSection = (sectionContent) => {
+    setHtmlContent(prevContent => prevContent + sectionContent);
+  };
+
+  const updateHtmlContent = (updatedContent) => {
+    setHtmlContent(updatedContent)
+  }
+
+  const addStyle = (style) => {
+    if(selectedElement) {
+      Object.assign(selectedElement.style, style);
+      setHtmlContent(document.getElementById("view-panel").innerHTML);
     }
   }
 
   return (
-    <div>
-      <h1>Editor</h1>
-      <form action="POST">
-        <input type="text" onChange={(e) =>{setMessage(e.target.value)}} name="message" id="" />
-        <input type="text" onChange={(e) =>{setStyle(e.target.value)}} name="style" id="" />
-        <input type="submit" onClick={submit} value="" />
-      </form>
+    <div className="container">
+      < LeftEditorPanel  onAddSection={addSection} />
+      < View 
+        htmlContent={htmlContent} 
+        updateHtmlContent={updateHtmlContent}  
+        setSelectedElement={setSelectedElement}
+      />
+      < RightEditorPanel addStyle={addStyle} />
     </div>
   )
 }

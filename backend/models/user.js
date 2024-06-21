@@ -4,7 +4,7 @@ const connectDB = process.env.MONGO_URI || 'mongodb://localhost:27017/cupids_jou
 
 mongoose.connect(connectDB)
 .then(()=>{
-  console.log("mongodb connected");
+  console.log("mongodb connected | User");
 })
 .catch(()=>{
   console.log('failed');

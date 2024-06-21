@@ -3,16 +3,16 @@ const connectDB = process.env.MONGO_URI || 'mongodb://localhost:27017/cupids_jou
 
 mongoose.connect(connectDB)
 .then(()=>{
-  console.log("mongodb connected");
+  console.log("mongodb connected | Letter");
 })
 .catch(()=>{
   console.log('failed');
 })
 
 
-const EditorSchema = new mongoose.Schema({
-    message : {type: String, required: true } ,
+const LetterSchema = new mongoose.Schema({
+    message : {type: String, required: true },
     style   : {type: String, required: true }
 });
 
-module.exports = mongoose.model("Editor", EditorSchema);
+module.exports = mongoose.model("Letter", LetterSchema);

@@ -1,7 +1,8 @@
 const PORT = process.env.PORT || 5000;
 const express = require('express');
 const userDb = require("./models/user");
-const editorDb = require("./models/editor");
+const letterDb = require("./models/letter");
+const projectDb = require("./models/project");
 const cors = require("cors");
 const app = express();
 app.use(express.json());
@@ -64,7 +65,7 @@ app.post("/editor", async(req, res) => {
         const data = { message, style };
 
         try {
-            await editorDb.insertMany([data]);
+            await letterDb.insertMany([data]);
             res.json("success");
         } catch (e) {
             console.error(e); 
