@@ -87,7 +87,7 @@
   font-style: italic;
 }
 
-  #heart {
+  #editor-heart {
       position: relative;
       width: 100px;
       height: 90px;
@@ -96,8 +96,8 @@
     
   }
 
-  #heart:before,
-  #heart:after {
+  #editor-heart:before,
+  #editor-heart:after {
       position: absolute;
       content: "";
       left: 50px;
@@ -118,7 +118,7 @@
            -o-transform-origin: 0 100%;
               transform-origin: 0 100%;
   }
-  #heart:after {
+  #editor-heart:after {
       left: 0;
       -webkit-transform: rotate(45deg);
          -moz-transform: rotate(45deg);
@@ -173,11 +173,6 @@
     color: #c33;
   }
 
-  .view-header {
-    margin-left: 10px;
-    margin-right: 10px;
-  }
-
 hr {
   color: #fff;
   border-width: 0px;
@@ -186,12 +181,11 @@ hr {
 
 .hidden {
   background-color: #c33;
-  padding: 20px;
+  padding: 7px;
   color: #fff;
   border-radius: 25px;
   opacity: 0;
   transition: all 1s;
-  font-size: 18px;
   margin-left: 20px;
   margin-right: 20px;
   
@@ -199,4 +193,11 @@ hr {
 
 .show {
   opacity: 1
+}
+
+
+.twemoji > img {
+  height: 1em;
+  width: auto;
+  display: inline-block;
 }

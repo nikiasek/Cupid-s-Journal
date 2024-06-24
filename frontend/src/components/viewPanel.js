@@ -1,7 +1,11 @@
-import React, {useRef, useEffect} from 'react'
-import "../css/view.css"
+import React, { useRef, useEffect } from 'react';
+import Twemoji from 'react-twemoji';
+import "../css/view.css";
 
-const ViewPanel = ({htmlContent, updateHtmlContent, setSelectedElement}) => {
+
+const ViewPanel = ({ htmlContent, updateHtmlContent, setSelectedElement }) => {
+  const containerRef = useRef(null);
+
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -16,16 +20,10 @@ const ViewPanel = ({htmlContent, updateHtmlContent, setSelectedElement}) => {
     const hiddenElements = containerRef.current.querySelectorAll(".hidden");
     hiddenElements.forEach((el) => observer.observe(el));
 
-    // Clean up the observer when the component unmounts
     return () => {
       hiddenElements.forEach((el) => observer.unobserve(el));
     };
   }, [htmlContent]);
-
-  const containerRef = useRef(null);
-
-  
-
 
   const handleSectionEdit = (e) => {
     const updatedContent = containerRef.current.innerHTML;
@@ -35,30 +33,28 @@ const ViewPanel = ({htmlContent, updateHtmlContent, setSelectedElement}) => {
   const handlePanelFocus = (e) => {
     if (e.target === e.currentTarget) {
       e.currentTarget.setAttribute("contentEditable", "false");
-    };
-  } 
+    }
+  };
 
   const handleElementFocus = (e) => {
-      e.target.setAttribute("contentEditable", "true");
-      setSelectedElement(e.target)
-  }
-
-  
+    e.target.setAttribute("contentEditable", "true");
+    setSelectedElement(e.target);
+  };
 
   return (
     <div id="view-panel" className='view' onFocus={handlePanelFocus}>
-      <div id="heart"></div>
-      <div 
-      ref={containerRef}
-      className='content-container'
-      dangerouslySetInnerHTML={{__html: htmlContent}} 
-      onBlur={handleSectionEdit} 
-      onFocus={handleElementFocus} 
-      />
-
-
+      <div id="editor-heart"></div>
+      <Twemoji className="twemoji" options={"react-twemoji"} >
+        <div
+          ref={containerRef}
+          className='content-container'
+          dangerouslySetInnerHTML={{ __html: htmlContent }}
+          onBlur={handleSectionEdit}
+          onFocus={handleElementFocus}
+        />
+      </Twemoji>
     </div>
-  )
-}
+  );
+};
 
-export default ViewPanel
+export default ViewPanel;
