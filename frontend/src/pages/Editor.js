@@ -1,12 +1,98 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import LeftEditorPanel from '../components/leftEditorPanel';
-import View from "../components/viewPanel";
+import ViewPanel from "../components/viewPanel";
 import RightEditorPanel from '../components/rightEditorPanel';
 import "../css/editor.css";
 
 const Editor = () => {
   const [htmlContent, setHtmlContent] = useState("");
-  const [selectedElement, setSelectedElement] = useState(null);
+  const [projectSettings, setProjectSettings] = useState({
+    projectName: '',
+    visibility: 'public',
+    font: 'Arial',
+    paragraphFontSize: '14',
+    users: []
+  });
+
+  const isLoggedIn = () => {
+    return localStorage.getItem("userToken") !== null;
+  };
+
+  const loadFromLocalStorage = () => {
+    const savedContent = localStorage.getItem('editorContent');
+    if (savedContent) {
+      const { content, projectSettings } = JSON.parse(savedContent);
+      setHtmlContent(content);
+      setProjectSettings(projectSettings);
+    }
+  };
+
+  const loadFromDatabase = () => {
+    const userId = localStorage.getItem("userId");
+    fetch(`/api/getContent?userId=${userId}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.content) {
+          setHtmlContent(data.content);
+          setProjectSettings(data.projectSettings);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to load content from database.');
+      });
+  };
+
+  const loadContent = useCallback(() => {
+    if (isLoggedIn()) {
+      loadFromDatabase();
+    } else {
+      loadFromLocalStorage();
+    }
+  }, []);
+
+  useEffect(() => {
+    loadContent();
+  }, [loadContent]);
+
+  const saveToLocalStorage = (content, projectSettings) => {
+    localStorage.setItem('editorContent', JSON.stringify({ content, projectSettings }));
+    alert('Content saved locally!');
+  };
+
+  const saveToDatabase = (content, projectSettings) => {
+    fetch('/api/saveContent', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ content, projectSettings, userId: localStorage.getItem("userId") }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        alert('Content saved to database!');
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to save content to database.');
+      });
+  };
+
+  const saveContent = () => {
+    if (isLoggedIn()) {
+      saveToDatabase(htmlContent, projectSettings);
+    } else {
+      saveToLocalStorage(htmlContent, projectSettings);
+    }
+  };
+
+  const updateHtmlContent = (updatedContent) => {
+    setHtmlContent(updatedContent);
+  };
+
+  const updateProjectSettings = (newSettings) => {
+    setProjectSettings(prevSettings => ({ ...prevSettings, ...newSettings }));
+  };
 
   const addSection = (sectionContent) => {
     setHtmlContent(prevContent => prevContent + sectionContent);
@@ -91,17 +177,6 @@ const Editor = () => {
     }
   };
 
-  const updateHtmlContent = (updatedContent) => {
-    setHtmlContent(updatedContent);
-  };
-
-  const addStyle = (style) => {
-    if (selectedElement) {
-      Object.assign(selectedElement.style, style);
-      setHtmlContent(document.getElementById("view-panel").innerHTML);
-    }
-  };
-
   return (
     <div className="container">
       <LeftEditorPanel
@@ -112,12 +187,15 @@ const Editor = () => {
         onAddListItem={addListItem}
         onAddHeader={addHeader}
       />
-      <View
+      <ViewPanel
         htmlContent={htmlContent}
         updateHtmlContent={updateHtmlContent}
-        setSelectedElement={setSelectedElement}
       />
-      <RightEditorPanel addStyle={addStyle} />
+      <RightEditorPanel
+        onSaveContent={saveContent}
+        projectSettings={projectSettings}
+        updateProjectSettings={updateProjectSettings}
+      />
     </div>
   );
 };

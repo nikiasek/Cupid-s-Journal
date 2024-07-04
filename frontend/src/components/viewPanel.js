@@ -1,7 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import Twemoji from 'react-twemoji';
 import "../css/view.css";
-
 
 const ViewPanel = ({ htmlContent, updateHtmlContent, setSelectedElement }) => {
   const containerRef = useRef(null);
@@ -44,15 +42,13 @@ const ViewPanel = ({ htmlContent, updateHtmlContent, setSelectedElement }) => {
   return (
     <div id="view-panel" className='view' onFocus={handlePanelFocus}>
       <div id="editor-heart"></div>
-      <Twemoji className="twemoji" options={"react-twemoji"} >
-        <div
-          ref={containerRef}
-          className='content-container'
-          dangerouslySetInnerHTML={{ __html: htmlContent }}
-          onBlur={handleSectionEdit}
-          onFocus={handleElementFocus}
-        />
-      </Twemoji>
+      <div
+        ref={containerRef}
+        className='content-container'
+        dangerouslySetInnerHTML={{ __html: htmlContent }}
+        onBlur={handleSectionEdit}
+        onFocus={handleElementFocus}
+      />
     </div>
   );
 };
