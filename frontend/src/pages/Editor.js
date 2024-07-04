@@ -78,11 +78,13 @@ const Editor = () => {
       });
   };
 
-  const saveContent = () => {
+  const saveContent = (updatedProjectSettings) => {
+    const settingsToSave = updatedProjectSettings || projectSettings; // Use updated settings if provided
+    console.log('saveContent called with projectSettings:', settingsToSave);
     if (isLoggedIn()) {
-      saveToDatabase(htmlContent, projectSettings);
+      saveToDatabase(htmlContent, settingsToSave);
     } else {
-      saveToLocalStorage(htmlContent, projectSettings);
+      saveToLocalStorage(htmlContent, settingsToSave);
     }
   };
 
@@ -91,6 +93,7 @@ const Editor = () => {
   };
 
   const updateProjectSettings = (newSettings) => {
+    console.log('updateProjectSettings called with newSettings:', newSettings);
     setProjectSettings(prevSettings => ({ ...prevSettings, ...newSettings }));
   };
 

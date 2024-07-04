@@ -1,23 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import "../css/rightEditorPanel.css";
 
 const RightEditorPanel = ({ onSaveContent, projectSettings, updateProjectSettings }) => {
   const [localSettings, setLocalSettings] = useState(projectSettings);
+  const [email, setEmail] = useState('');
 
   useEffect(() => {
     setLocalSettings(projectSettings);
   }, [projectSettings]);
 
-  useEffect(() => {
-    applyStyles();
-  }, [localSettings.font, localSettings.paragraphFontSize]);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setLocalSettings(prevSettings => ({ ...prevSettings, [name]: value }));
-  };
-
-  const applyStyles = () => {
+  const applyStyles = useCallback(() => {
     const container = document.querySelector('.content-container');
     if (container) {
       container.style.fontFamily = localSettings.font;
@@ -26,30 +18,47 @@ const RightEditorPanel = ({ onSaveContent, projectSettings, updateProjectSetting
         p.style.fontSize = `${localSettings.paragraphFontSize}px`;
       });
     }
+  }, [localSettings.font, localSettings.paragraphFontSize]);
+
+  useEffect(() => {
+    applyStyles();
+  }, [applyStyles]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setLocalSettings(prevSettings => ({ ...prevSettings, [name]: value }));
+  };
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
   };
 
   const handleVisibilityChange = (e) => {
     setLocalSettings(prevSettings => ({ ...prevSettings, visibility: e.target.value }));
   };
 
-  const addUser = (email) => {
-    setLocalSettings(prevSettings => ({ ...prevSettings, users: [...prevSettings.users, email] }));
+  const addUser = () => {
+    if (email && !localSettings.users.includes(email)) {
+      setLocalSettings(prevSettings => ({ ...prevSettings, users: [...prevSettings.users, email] }));
+      setEmail('');
+    }
   };
 
-  const removeUser = (email) => {
-    setLocalSettings(prevSettings => ({ ...prevSettings, users: prevSettings.users.filter(user => user !== email) }));
+  const removeUser = (emailToRemove) => {
+    setLocalSettings(prevSettings => ({ ...prevSettings, users: prevSettings.users.filter(user => user !== emailToRemove) }));
   };
 
   const handleSave = () => {
+    console.log('handleSave called with localSettings:', localSettings);
     updateProjectSettings(localSettings);
-    onSaveContent();
+    onSaveContent(localSettings); // Pass the updated settings directly
   };
 
   return (
     <div className='rightPanel'>
-      <h2 className="rightPanelHeader"> Project settings </h2>
+      <h2 className="rightPanelHeader">Project Settings</h2>
       <div className="labelElement">
-        <p className="labelName"> Project name </p>
+        <p className="labelName">Project Name</p>
         <input
           type="text"
           name="projectName"
@@ -58,43 +67,46 @@ const RightEditorPanel = ({ onSaveContent, projectSettings, updateProjectSetting
         />
       </div>
       <div className="optionElement">
-        <p className="optionName"> Visibility </p>
+        <p className="optionName">Visibility</p>
         <select id="visibility" value={localSettings.visibility} onChange={handleVisibilityChange}>
-          <option value="secret"> Secret </option>
-          <option value="invisible"> Invisible </option>
-          <option value="public"> Public </option>
+          <option value="secret">Secret</option>
+          <option value="invisible">Invisible</option>
+          <option value="public">Public</option>
         </select>
       </div>
       {localSettings.visibility === 'secret' && (
         <div className="labelElement">
-          <p className="labelName"> Add User by Email </p>
-          <input
-            type="email"
-            placeholder="User email"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') addUser(e.target.value);
-            }}
-          />
-          <p className="labelName"> Remove User by Email </p>
-          <input
-            type="email"
-            placeholder="User email"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') removeUser(e.target.value);
-            }}
-          />
+          <p className="labelName">Add User by Email</p>
+          <div className="emailInputContainer">
+            <input
+              type="email"
+              value={email}
+              onChange={handleEmailChange}
+              placeholder="User email"
+            />
+            <button onClick={addUser}>Add</button>
+          </div>
+          <div className="userList">
+            {localSettings.users.map((userEmail, index) => (
+              <div key={index} className="userItem">
+                <span>{userEmail}</span>
+                <button onClick={() => removeUser(userEmail)}>Remove</button>
+              </div>
+            ))}
+          </div>
         </div>
       )}
       <div className="optionElement">
-        <p className="optionName"> Font </p>
+        <p className="optionName">Font</p>
         <select name="font" value={localSettings.font} onChange={handleInputChange}>
-          <option value="Arial"> Arial </option>
-          <option value="Verdana"> Verdana </option>
-          <option value="Times New Roman"> Times New Roman </option>
+          <option value="Arial">Arial</option>
+          <option value="Verdana">Verdana</option>
+          <option value="Times New Roman">Times New Roman</option>
+          <option value="Roboto">Roboto</option>
         </select>
       </div>
       <div className="optionElement">
-        <p className="optionName"> Paragraph Font Size </p>
+        <p className="optionName">Paragraph Font Size</p>
         <input
           type="number"
           name="paragraphFontSize"
