@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const connectDB = process.env.MONGO_URI || 'mongodb://localhost:27017/cupids_journal_db';
+require("dotenv").config()
 
-mongoose.connect(connectDB)
+mongoose.connect(process.env.MONGO_URI)
 .then(()=>{
   console.log("mongodb connected | User");
 })
