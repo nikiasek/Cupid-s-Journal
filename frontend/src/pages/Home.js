@@ -1,25 +1,29 @@
-import React from "react";
+import { React, useContext} from "react";
 import {Link} from "react-router-dom";
 import "../css/home.css";
 import Header from "../components/Header";
+import { AuthContext } from "../components/authContext";
 
 
 
 const Home = () => {
-    const isLoggedIn = localStorage.getItem("loggedIn")
     var message = "";
     var buttonMessage = "";
     var buttonLink ="";
-    if(isLoggedIn === "true") {
+    const {token, loading} = useContext(AuthContext)
+
+
+
+    if(!token) {
+        message = "Do you have an account?";
+        buttonMessage = "Sign in";
+        buttonLink = "/signup";
+    }
+    else {
         message = "Start creating your own letters";
         buttonMessage = "Editor";
         buttonLink= "/Editor";
     }
-    else {
-        message = "Do you have an account?";
-        buttonMessage = "Sign in";
-        buttonLink = "/signup";
-    };
 
 
     return (

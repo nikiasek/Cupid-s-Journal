@@ -1,5 +1,5 @@
-import React from 'react'
-import "../css/header.css"
+import React from 'react';
+import "../css/header.css";
 import { MdAccountCircle } from "react-icons/md";
 import { FaRegWindowMaximize } from "react-icons/fa";
 import { FaMessage } from "react-icons/fa6";

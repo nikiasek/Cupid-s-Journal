@@ -1,50 +1,57 @@
-import React, {useState} from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
+import { AuthContext } from "./authContext";
+import { useNavigate } from "react-router-dom";
 
-function Login () {
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const history=useNavigate();
+const Login = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null); // New state for handling error messages
+  const { setToken } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:5000/auth/login", {
+        username,
+        password,
+      });
+      console.log("kokot jde to")
+      localStorage.setItem("token", response.data.token);
+      setToken(response.data.token);
 
-    async function submit (e) {
-        e.preventDefault()
-
-        try {
-            await axios.post("http://localhost:5000/login", {
-                email, password
-            })
-            .then(res => {
-                if(res.data === "exist") {
-                    history("/Home", {state:{id:email}})
-                    localStorage.setItem("email", email)
-                    localStorage.setItem("loggedIn", true)           
-                }
-                else if(res.data === "notExist") {
-                    alert("Wrong credentials")
-                }
-            })
-            .catch(e=>{
-                alert("wrong details")
-                console.log(e)
-            })
-        }
-        catch(e) {
-            console.log(e)
-        }
+      navigate("/");
+    } catch (error) {
+      console.error("Authentication failed:", error);
+      setToken(null);
+      localStorage.removeItem("token");
+      if (error.response && error.response.data) {
+        setErrorMessage(error.response.data); // Set the error message if present in the error response
+      } else {
+        setErrorMessage("An unexpected error occurred. Please try again.");
+      }
     }
+  };
 
-    return (
-        <div className="loginForm">
-            <h1>Login</h1>
-            <form action="POST">
-                <input type="email" onChange={(e) =>{setEmail(e.target.value)}} placeholder="email" name="" id="" />
-                <input type="password" onChange={(e) =>{setPassword(e.target.value)}} name="password" id="" />
+  return (
+    <div>
+      {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}{" "}
+      <form onSubmit={handleSubmit}>
+        <input
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Username"
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+        />
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  );
+};
 
-                <input type="submit" onClick={submit} value="" />
-            </form>
-        </div>
-    )
-}
-
-export default Login
+export default Login;

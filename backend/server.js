@@ -3,12 +3,14 @@ const userDb = require("./models/user");
 const letterDb = require("./models/letter");
 const projectDb = require("./models/project");
 const cors = require("cors");
+const authRoutes = require("./routes/auth");
+
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cors());
 require("dotenv").config()
-const auth = require("./routes/auth")
+
 
 
 console.log(process.env, "\n")
@@ -18,48 +20,9 @@ app.get("/", async(req, res) => {
 })
 
 
-app.get("/auth/login", cors(), (req, res) => {
-    res.json("auth")
-})
-
-app.post("/auth/login", async(req, res) => {
-const { email, password } = req.body;
-  try {
-    const userDb = await User.findOne({ email });
-    if (!userDb || !await bcrypt.compare(password, userDb.password)) {
-      return res.status(401).send('Invalid credentials');
-    }
-    const token = jwt.sign({ id: userDb._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.json({ token });
-  } catch (error) {
-    res.status(500).send('Server error');
-  }
-});
-
-app.post("/auth/signup", async(req, res) => {
-    const{email, password, username}=req.body
-    const data={
-        email:email,
-        password:password,
-        username:username
-    }
-
-    try {
-        const check= await userDb.findOne({email:email})
-
-        if(check) {
-            res.json("exist")
-        }
-
-        else {
-            res.json("notExist")
-            await userDb.insertMany([data])
-        }
-    }
-    catch (e){
-        res.json("fail")
-    }
-})
+app.use(cors()); // Use CORS middleware to allow requests from the frontend
+app.use(express.json());
+app.use("/auth", authRoutes); // All the routes defined in auth.js will be prefixed with /api/auth
 
 app.post("/editor", async(req, res) => {
     const { message, style } = req.body;

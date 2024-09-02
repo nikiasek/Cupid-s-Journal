@@ -1,52 +1,47 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
 
-function Signup () {
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [username, setUsername] = useState("")
-    const history=useNavigate();
+const Registration = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
 
-    async function submit (e) {
-        e.preventDefault()
-
-        try {
-            await axios.post("http://localhost:5000/auth/signup", {
-                email, password, username
-            })
-            .then(res => {
-                if(res.data === "exist") {
-                    alert("User already exists")
-                }
-                else if(res.data === "notExist") {
-                    history("/Home", {state:{id:email}})
-                    localStorage.setItem("email", setEmail(email))
-                    localStorage.setItem("loggedIn", true)                   
-                }
-            })
-            .catch(e=>{
-                alert("wrong details")
-                console.log(e)
-            })
-        }
-        catch(e) {
-            console.log(e)
-        }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:5000/auth/register", {
+        username,
+        password,
+      });
+      setMessage(response.data.message);
+    } catch (error) {
+      console.error("Registration failed:", error.response.data.error);
+      setMessage(error.response.data.error);
     }
+  };
 
-    return (
-        <div className="SignupForm">
-            <h1>Signup</h1>
-            <form action="POST">
-                <input type="email" onChange={(e) =>{setEmail(e.target.value)}} placeholder="email" name="" id="" />
-                <input type="password" onChange={(e) =>{setPassword(e.target.value)}} name="password" id="" />
-                <input type="text" onChange={(e) =>{setUsername(e.target.value)}} name="username" id="" />
+  return (
+    <div>
+      <h2>Register</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Username"
+          required
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+          required
+        />
+        <button type="submit">Register</button>
+      </form>
+      {message && <p>{message}</p>}
+    </div>
+  );
+};
 
-                <input type="submit" onClick={submit} value="" />
-            </form>
-        </div>
-    )
-}
-
-export default Signup
+export default Registration;

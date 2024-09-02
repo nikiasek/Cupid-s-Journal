@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Routes, Route, Redirect } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import Home from "./pages/Home";
@@ -10,12 +10,15 @@ import Signup from "./pages/Signin";
 import Account from "./pages/Account";
 import Inspiration from "./pages/Inspiration";
 import Editor from "./pages/Editor"
+import { AuthProvider } from "./components/authContext";
+
 
 
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
+      <AuthProvider>
+        <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/Home" element={<Home />} />
           <Route path="*" element={<NoPage />} />
@@ -24,7 +27,8 @@ export default function App() {
           <Route path="/Account" element={<Account />} />
           <Route path="/Home/Inspiration" element={<Inspiration />} />
           <Route path="/Editor" element={<Editor />} />
-      </Routes>
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
