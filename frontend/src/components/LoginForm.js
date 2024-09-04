@@ -1,10 +1,13 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "./authContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Outlet, Link } from "react-router-dom";
+import "../css/auth.css"
+
+
 
 const Login = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(null); // New state for handling error messages
   const { setToken } = useContext(AuthContext);
@@ -13,7 +16,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post("http://localhost:5000/auth/login", {
-        username,
+        email,
         password,
       });
       console.log("kokot jde to")
@@ -35,23 +38,42 @@ const Login = () => {
 
   return (
     <div>
+      <div className="header-auth">
+      <div id="heart"></div>
+      </div>
       {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}{" "}
-      <form onSubmit={handleSubmit}>
-        <input
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Username"
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-        />
-        <button type="submit">Login</button>
-      </form>
+      <div className="container-auth">
+        <h1>Please, login!</h1>
+        <br />
+        <form onSubmit={handleSubmit}>
+          <p className="p-auth">username</p>
+          <input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email email"
+            className="input-auth"
+            type="email"
+          />
+          <br />
+
+          <p className="p-auth">paswword</p>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            className="input-auth"
+          />
+          <br />
+          <button type="submit" className="button-auth">Login</button>
+        </form>
+      </div>
+      <div className="container-auth">
+        <p>Are you new to Cupid? <Link to="/signup">sign here</Link></p>
+        <Outlet />
+      </div>
     </div>
-  );
+  )
 };
 
 export default Login;

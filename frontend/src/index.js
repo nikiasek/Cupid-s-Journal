@@ -9,7 +9,8 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signin";
 import Account from "./pages/Account";
 import Inspiration from "./pages/Inspiration";
-import Editor from "./pages/Editor"
+import Editor from "./pages/Editor";
+import Logout from "./components/logout"
 import { AuthProvider } from "./components/authContext";
 
 
@@ -27,6 +28,7 @@ export default function App() {
           <Route path="/Account" element={<Account />} />
           <Route path="/Home/Inspiration" element={<Inspiration />} />
           <Route path="/Editor" element={<Editor />} />
+          <Route path="/logout" element={<Logout />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

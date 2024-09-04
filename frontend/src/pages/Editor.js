@@ -13,6 +13,7 @@ const Editor = () => {
     paragraphFontSize: '14',
     users: []
   });
+  const [selectedElement, setSelectedElement] = useState(null);
 
   const isLoggedIn = () => {
     return localStorage.getItem("userToken") !== null;
@@ -193,6 +194,7 @@ const Editor = () => {
       <ViewPanel
         htmlContent={htmlContent}
         updateHtmlContent={updateHtmlContent}
+        setSelectedElement={setSelectedElement}
       />
       <RightEditorPanel
         onSaveContent={saveContent}
