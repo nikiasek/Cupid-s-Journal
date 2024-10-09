@@ -3,16 +3,28 @@ require("dotenv").config()
 
 mongoose.connect(process.env.MONGO_URI)
 .then(()=>{
-  console.log("mongodb connected | Project");
+  console.log("mongodb connected | Projects");
 })
 .catch(()=>{
   console.log('failed');
 })
 
 
-const ProjectSchema = new mongoose.Schema({
-    projectName : {type: String, required: true },
-    content   : {type: Object, required: true }
+const projectSchema = new mongoose.Schema({
+  hmlContent: [
+    {
+      htmlContent: String,
+    }
+  ],
+  projectSettings: {
+    projectName: String,
+    visibility: String,
+    font: String,
+    paragraphFontSize: Number,
+    date: Date,
+    users: [{ type: String }]
+  },
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 });
 
-module.exports = mongoose.model("Project", ProjectSchema);
+module.exports = mongoose.model("Project", projectSchema);

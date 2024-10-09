@@ -4,7 +4,7 @@
   },
   "scripts": {
     "start:frontend": "cd frontend && npm start",
-    "start:backend": "cd backend && node --trace-deprecation server.js",
+    "start:backend": "cd backend && nodemon exec node --trace-deprecation --trace-warnings server.js",
     "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\""
   }
 }

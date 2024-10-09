@@ -75,7 +75,7 @@
 
 .container-auth {
     background-color: #fff;
-    margin: 50px 40%;
+    margin: 50px 40% 5px;
     padding: 20px;
     align-items: center;
     text-align: center;
@@ -86,6 +86,7 @@
 .p-auth {
     font-family: "Roboto";
     font-size: large;
+    margin-bottom: 5px;
 }
 
 .button-auth {

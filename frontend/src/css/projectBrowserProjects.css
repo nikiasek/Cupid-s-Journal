@@ -1,0 +1,54 @@
+
+
+.projectCards {
+    display: flex;
+    width: 78vw;
+    flex-wrap: wrap;
+    margin: auto;
+}
+
+.card {
+    width: 23vw;
+    margin: 1.5vw;
+    background-color: aliceblue;
+    border-radius: 25px;
+
+}
+
+.cardView {
+    background-color: #c33;
+    height: 150px;
+    color: #FFF;
+    border-radius: 25px;
+    
+    padding: 20px;
+}
+
+.cardInfo  {
+    padding: 20px
+}
+
+.editorView button {
+    width: 120px;
+    height: 40px;
+    border-radius: 60px;
+    background-color: #c33;
+    border-style: none;
+    color: #F9EAEA;
+    justify-content: center;
+}
+
+
+
+.editorView {
+    text-align: center;
+    padding: 25px;
+
+    background-color: aliceblue;
+    border-radius: 25px;
+}
+
+.editorView h3 {
+    font-style: normal;
+    font-weight: 600;
+}

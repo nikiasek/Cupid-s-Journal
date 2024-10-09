@@ -1,12 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import "../css/rightEditorPanel.css";
 
-const RightEditorPanel = ({ onSaveContent, projectSettings, updateProjectSettings }) => {
+const RightEditorPanel = ({ saveToDatabase, projectSettings, updateProjectSettings }) => {
   const [localSettings, setLocalSettings] = useState(projectSettings);
   const [email, setEmail] = useState('');
+  const [localProjectName, setLocalProjectName] = useState(projectSettings.name)
+  const [localDate, setLocalDate] = useState(projectSettings.date)
+  
 
   useEffect(() => {
+    setLocalDate(Date.now())
     setLocalSettings(projectSettings);
+    setLocalProjectName(projectSettings.name)
+    console.log(localDate)
   }, [projectSettings]);
 
   const applyStyles = useCallback(() => {
@@ -50,8 +56,8 @@ const RightEditorPanel = ({ onSaveContent, projectSettings, updateProjectSetting
 
   const handleSave = () => {
     console.log('handleSave called with localSettings:', localSettings);
-    updateProjectSettings(localSettings);
-    onSaveContent(localSettings); // Pass the updated settings directly
+    updateProjectSettings(localSettings)
+    saveToDatabase()
   };
 
   return (

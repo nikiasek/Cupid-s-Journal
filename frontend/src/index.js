@@ -10,10 +10,9 @@ import Signup from "./pages/Signin";
 import Account from "./pages/Account";
 import Inspiration from "./pages/Inspiration";
 import Editor from "./pages/Editor";
-import Logout from "./components/logout"
-import { AuthProvider } from "./components/authContext";
-
-
+import Logout from "./components/logout";
+import ProjectBrowser from './pages/ProjectBrowser';
+import { AuthProvider } from './context/authProvider';
 
 export default function App() {
   return (
@@ -29,6 +28,7 @@ export default function App() {
           <Route path="/Home/Inspiration" element={<Inspiration />} />
           <Route path="/Editor" element={<Editor />} />
           <Route path="/logout" element={<Logout />} />
+          <Route path='/projectBrowser' element={<ProjectBrowser />} /> 
         </Routes>
       </AuthProvider>
     </BrowserRouter>
@@ -46,6 +46,3 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
-
-
-

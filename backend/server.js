@@ -1,15 +1,19 @@
 const express = require('express');
-const userDb = require("./models/user");
-const letterDb = require("./models/letter");
 const projectDb = require("./models/project");
 const cors = require("cors");
-const authRoutes = require("./routes/auth");
+const corsOptions = require("./config/corsOption")
+const cookieParser = require('cookie-parser');
+const verifyJWT = require("./middleware/verifyJWT")
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.use(cors());
 require("dotenv").config()
+//app.use(credentials);
+app.use(cors(corsOptions.corsOptions));
+app.use(cookieParser());
+
+
 
 
 
@@ -20,29 +24,16 @@ app.get("/", async(req, res) => {
 })
 
 
-app.use(cors()); // Use CORS middleware to allow requests from the frontend
-app.use(express.json());
-app.use("/auth", authRoutes); // All the routes defined in auth.js will be prefixed with /api/auth
+// routes
+app.use('/auth/register', require('./routes/register'));
+app.use('/auth/login', require('./routes/auth'));
+app.use('/refresh', require('./routes/refresh'));
+app.use('/auth/logout', require('./routes/logout'));
 
-app.post("/editor", async(req, res) => {
-    const { message, style } = req.body;
 
-
-    if (message && style) {
-        const data = { message, style };
-
-        try {
-            await letterDb.insertMany([data]);
-            res.json("success");
-        } catch (e) {
-            console.error(e); 
-            res.status(500).json("something really wrong");
-        }
-    } else {
-        res.status(400).json("no data");
-    }
-})
-
+app.use(verifyJWT);
+app.use('/projects/browser', require('./routes/api/projectBrowser')); // databáze
+app.use("/projects/editor"  , require("./routes/api/projectEditor")); // edit project
 
 app.listen(SERVER_PORT = process.env.SERVER_PORT, () => {
     console.log("port connected ", SERVER_PORT, "\n")

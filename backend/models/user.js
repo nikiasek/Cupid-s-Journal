@@ -26,14 +26,8 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  tokens: [
-    {
-      token: {
-        type: String,
-        required: true,
-      },
-    },
-  ],
+  projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }],
+  userRefreshToken: String,
 });
 
 userSchema.methods.verifyPassword = async function (password) {

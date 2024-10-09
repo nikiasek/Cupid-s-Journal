@@ -1,20 +1,26 @@
-import { React, useContext} from "react";
+import { React } from "react";
 import {Link} from "react-router-dom";
 import "../css/home.css";
 import Header from "../components/Header";
-import { AuthContext } from "../components/authContext";
-
-
+import useAuth from "../hooks/useAuth";
+import Users from "../components/users"
 
 const Home = () => {
+    const { auth } = useAuth();
     var message = "";
     var buttonMessage = "";
     var buttonLink ="";
-    const {token, loading} = useContext(AuthContext)
+    
+    
+    console.log(Object.keys(auth).length === 0)
+
+    const isEmpty = (auth) => {
+        return Object.keys(auth).length === 0
+    }
+      
 
 
-
-    if(!token) {
+    if(Object.keys(auth).length === 0) {
         message = "Do you have an account?";
         buttonMessage = "Sign in";
         buttonLink = "/signup";
@@ -22,7 +28,7 @@ const Home = () => {
     else {
         message = "Start creating your own letters";
         buttonMessage = "Editor";
-        buttonLink= "/Editor";
+        buttonLink= "/projectBrowser";
     }
 
 
@@ -35,6 +41,7 @@ const Home = () => {
                 <p className="roboto-light">{message}</p>
                 <Link to={buttonLink} > <button>{buttonMessage}</button> </Link>
             </div>
+            <Users />
         </>
     )
   };

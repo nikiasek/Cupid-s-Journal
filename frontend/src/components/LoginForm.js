@@ -1,37 +1,44 @@
-import React, { useState, useContext } from "react";
-import axios from "axios";
-import { AuthContext } from "./authContext";
+import React, { useState } from "react";
 import { useNavigate, Outlet, Link } from "react-router-dom";
-import "../css/auth.css"
-
-
+import "../css/auth.css";
+import useAuth from '../hooks/useAuth';
+import axios from "../api/axios";
+const LOGIN_URL = "/auth/login";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState(null); // New state for handling error messages
-  const { setToken } = useContext(AuthContext);
+  const [errorMessage, setErrorMessage] = useState(null);
   const navigate = useNavigate();
+  const { setAuth } = useAuth();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/auth/login", {
-        email,
-        password,
-      });
-      console.log("kokot jde to")
-      localStorage.setItem("token", response.data.token);
-      setToken(response.data.token);
-
-      navigate("/");
+      const response = await axios.post(LOGIN_URL, 
+        JSON.stringify({ email, password}),
+        {
+          headers: {"Content-Type": "application/json"},
+          withCredentials: true
+        }
+      );
+      console.log(response);
+      const accessToken = response?.data?.accessToken;
+      setAuth({email, password, accessToken});
+      navigate("/")
     } catch (error) {
       console.error("Authentication failed:", error);
-      setToken(null);
-      localStorage.removeItem("token");
       if (error.response && error.response.data) {
-        setErrorMessage(error.response.data); // Set the error message if present in the error response
-      } else {
-        setErrorMessage("An unexpected error occurred. Please try again.");
+        setErrorMessage(error.response.data);
+      }
+      else if(error.response.status === 400) {
+        console.log("missing email or password")
+      }
+      else if(error.response.status === 401) {
+        console.log("Unauthorized")
+      }
+      else {
+        setErrorMessage("No server response");
       }
     }
   };
@@ -39,7 +46,7 @@ const Login = () => {
   return (
     <div>
       <div className="header-auth">
-      <div id="heart"></div>
+        <Link to="/"><div id="heart"></div></Link>
       </div>
       {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}{" "}
       <div className="container-auth">
@@ -50,13 +57,13 @@ const Login = () => {
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email email"
+            placeholder="Email"
             className="input-auth"
             type="email"
           />
           <br />
 
-          <p className="p-auth">paswword</p>
+          <p className="p-auth">password</p>
           <input
             type="password"
             value={password}
@@ -69,11 +76,11 @@ const Login = () => {
         </form>
       </div>
       <div className="container-auth">
-        <p>Are you new to Cupid? <Link to="/signup">sign here</Link></p>
+        <p>Are you new to Cupid's Journal? <Link to="/signup"><button className="button-auth" >Signup here</button></Link></p>
         <Outlet />
       </div>
     </div>
-  )
+  );
 };
 
 export default Login;

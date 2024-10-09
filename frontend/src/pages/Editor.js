@@ -1,93 +1,22 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import LeftEditorPanel from '../components/leftEditorPanel';
 import ViewPanel from "../components/viewPanel";
 import RightEditorPanel from '../components/rightEditorPanel';
 import "../css/editor.css";
+import Axios from "axios";
 
 const Editor = () => {
   const [htmlContent, setHtmlContent] = useState("");
+  const [selectedElement, setSelectedElement] = useState(null);
   const [projectSettings, setProjectSettings] = useState({
     projectName: '',
     visibility: 'public',
     font: 'Arial',
     paragraphFontSize: '14',
-    users: []
+    date: "",
+    users: [],
   });
-  const [selectedElement, setSelectedElement] = useState(null);
 
-  const isLoggedIn = () => {
-    return localStorage.getItem("userToken") !== null;
-  };
-
-  const loadFromLocalStorage = () => {
-    const savedContent = localStorage.getItem('editorContent');
-    if (savedContent) {
-      const { content, projectSettings } = JSON.parse(savedContent);
-      setHtmlContent(content);
-      setProjectSettings(projectSettings);
-    }
-  };
-
-  const loadFromDatabase = () => {
-    const userId = localStorage.getItem("userId");
-    fetch(`/api/getContent?userId=${userId}`)
-      .then(response => response.json())
-      .then(data => {
-        if (data.content) {
-          setHtmlContent(data.content);
-          setProjectSettings(data.projectSettings);
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('Failed to load content from database.');
-      });
-  };
-
-  const loadContent = useCallback(() => {
-    if (isLoggedIn()) {
-      loadFromDatabase();
-    } else {
-      loadFromLocalStorage();
-    }
-  }, []);
-
-  useEffect(() => {
-    loadContent();
-  }, [loadContent]);
-
-  const saveToLocalStorage = (content, projectSettings) => {
-    localStorage.setItem('editorContent', JSON.stringify({ content, projectSettings }));
-    alert('Content saved locally!');
-  };
-
-  const saveToDatabase = (content, projectSettings) => {
-    fetch('/api/saveContent', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ content, projectSettings, userId: localStorage.getItem("userId") }),
-    })
-      .then(response => response.json())
-      .then(data => {
-        alert('Content saved to database!');
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('Failed to save content to database.');
-      });
-  };
-
-  const saveContent = (updatedProjectSettings) => {
-    const settingsToSave = updatedProjectSettings || projectSettings; // Use updated settings if provided
-    console.log('saveContent called with projectSettings:', settingsToSave);
-    if (isLoggedIn()) {
-      saveToDatabase(htmlContent, settingsToSave);
-    } else {
-      saveToLocalStorage(htmlContent, settingsToSave);
-    }
-  };
 
   const updateHtmlContent = (updatedContent) => {
     setHtmlContent(updatedContent);
@@ -95,8 +24,78 @@ const Editor = () => {
 
   const updateProjectSettings = (newSettings) => {
     console.log('updateProjectSettings called with newSettings:', newSettings);
-    setProjectSettings(prevSettings => ({ ...prevSettings, ...newSettings }));
+    console.log("html content:", htmlContent)
+    const updatedSettings = { ...newSettings, date: Date.now() };
+    setProjectSettings(prevSettings => ({ ...prevSettings, ...updatedSettings }));
   };
+
+  // SAVE
+
+  // 
+  const saveToDatabase = async (projectSettings, htmlContent) => {
+    try {
+      const response = await Axios.post("http://localhost:5000/editor/save", {
+        projectSettings,
+        htmlContent
+      });
+      console.log(response.data);
+      } catch  (error) {
+      console.log(error)
+    }
+  }
+
+
+
+
+
+  // LOAD
+
+
+  //const findLatestKey = () => {
+  //  console.log('localStorage:', localStorage);
+  //  const projectDate = Object.entries(localStorage)
+  //  .filter(([key, value]) => /-projectSettings$/.test(key))
+  //  .reduce((acc, [key, value]) => {
+  //    const projectSettings = JSON.parse(value);
+  //    if (projectSettings.date) {
+  //      acc[key] = projectSettings.date
+  //    }
+  //    
+  //    return acc
+  //  }, {});
+  //  console.log('projectDate:', projectDate);
+//
+  //  const entries = Object.entries(projectDate);
+  //  const [maxKey, maxValue] = entries.reduce((acc, [key, value]) => {
+  //    return value > acc[1] ? [key, value] : acc;
+  //  }, ['', 0]);
+  //  
+  //  const projectId = maxKey.replace('-projectSettings', '');
+  //  console.log("max value:", maxValue);
+  //  console.log("max key:", projectId);
+  //  return projectId
+  //};
+  //
+  //const loadFromLocalStorage = ({ projectId } = findLatestKey() ) => {
+  //  const savedHtmlContent = localStorage.getItem(`${projectId}-htmlContent`);
+  //  const savedProjectSettings = localStorage.getItem(`${projectId}-projectSettings`)
+  //  console.log('savedHtmlContent:', savedHtmlContent);
+  //  console.log('savedProjectSettings:', savedProjectSettings);
+  //  if (savedHtmlContent &&  savedProjectSettings) {
+  //    const content = savedHtmlContent
+  //    const projectSettings = JSON.parse(savedProjectSettings)
+  //    setHtmlContent(content);
+  //    setProjectSettings(projectSettings);
+  //    }
+  //}
+//
+  //useEffect (() => {
+  //  loadFromLocalStorage()
+  //},[])
+
+
+
+  // ADD STUFF 
 
   const addSection = (sectionContent) => {
     setHtmlContent(prevContent => prevContent + sectionContent);
@@ -197,7 +196,7 @@ const Editor = () => {
         setSelectedElement={setSelectedElement}
       />
       <RightEditorPanel
-        onSaveContent={saveContent}
+        saveToDatabase={saveToDatabase}
         projectSettings={projectSettings}
         updateProjectSettings={updateProjectSettings}
       />
